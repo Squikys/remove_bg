@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Image Processor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      text-align: center;
+      background: #fafafa;
+    }
+    h1 { color: #333; }
+    .drop-zone {
+      border: 2px dashed #888;
+      border-radius: 10px;
+      padding: 40px 20px;
+      background: #fff;
+      cursor: pointer;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .drop-zone.dragover {
+      background: #e8f0fe;
+      border-color: #005eff;
+    }
+    img {
+      max-width: 100%;
+      margin-top: 15px;
+      border-radius: 8px;
+    }
+    button {
+      margin-top: 15px;
+      background: #005eff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    #spinner {
+      display: none;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Image Upload & Processing</h1>
+  <p>Drag and drop an image below or click to select one.</p>
+
+  <div id="dropZone" class="drop-zone">
+    <p>📤 Drop or click to upload an image</p>
+    <input id="fileInput" type="file" accept="image/*" hidden />
+  </div>
+
+  <button id="uploadBtn">Process Image</button>
+  <span id="spinner">⏳ Processing...</span>
+
+  <div id="previewSection" style="display:none;">
+    <h3>Original Image</h3>
+    <img id="originalImg" alt="original" />
+    <h3>Processed Image</h3>
+    <img id="processedImg" alt="processed" />
+    <br />
+    <button id="downloadBtn" style="display:none;">Download Processed Image</button>
+  </div>
+
+  <script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const spinner = document.getElementById('spinner');
+    const previewSection = document.getElementById('previewSection');
+    const originalImg = document.getElementById('originalImg');
+    const processedImg = document.getElementById('processedImg');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    let selectedFile = null;
+
+    // Drag & Drop handlers
+    dropZone.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
+    dropZone.addEventListener('dragover', e => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      handleFile(e.dataTransfer.files[0]);
+    });
+
+    function handleFile(file) {
+      if (!file || !file.type.startsWith('image/')) {
+        alert('Please upload a valid image file.');
+        return;
+      }
+      selectedFile = file;
+      const url = URL.createObjectURL(file);
+      previewSection.style.display = 'block';
+      originalImg.src = url;
+      processedImg.src = '';
+      downloadBtn.style.display = 'none';
+    }
+
+    uploadBtn.addEventListener('click', async () => {
+      if (!selectedFile) {
+        alert('Please select an image first.');
+        return;
+      }
+      spinner.style.display = 'inline';
+      uploadBtn.disabled = true;
+
+      const form = new FormData();
+      form.append('file', selectedFile, selectedFile.name);
+
+      try {
+        const res = await fetch('http://localhost:8000/api/remove', {
+          method: 'POST',
+          body: form,
+        });
+        if (!res.ok) throw new Error('Processing failed');
+
+        const blob = await res.blob();
+        const objectURL = URL.createObjectURL(blob);
+        processedImg.src = objectURL;
+        downloadBtn.style.display = 'inline-block';
+
+        downloadBtn.onclick = () => {
+          const link = document.createElement('a');
+          link.href = objectURL;
+          link.download = 'processed.png';
+          link.click();
+        };
+      } catch (err) {
+        alert('Error: ' + err.message);
+      } finally {
+        spinner.style.display = 'none';
+        uploadBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
