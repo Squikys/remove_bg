@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -12,7 +13,11 @@
       text-align: center;
       background: #fafafa;
     }
-    h1 { color: #333; }
+
+    h1 {
+      color: #333;
+    }
+
     .drop-zone {
       border: 2px dashed #888;
       border-radius: 10px;
@@ -21,15 +26,18 @@
       cursor: pointer;
       transition: background 0.3s, border-color 0.3s;
     }
+
     .drop-zone.dragover {
       background: #e8f0fe;
       border-color: #005eff;
     }
+
     img {
       max-width: 100%;
       margin-top: 15px;
       border-radius: 8px;
     }
+
     button {
       margin-top: 15px;
       background: #005eff;
@@ -40,18 +48,21 @@
       cursor: pointer;
       font-size: 1rem;
     }
+
     button:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
+
     #spinner {
       display: none;
       margin-left: 10px;
     }
   </style>
 </head>
+
 <body>
-  <h1>Image Upload & Processing</h1>
+  <h1>Remove Background</h1>
   <p>Drag and drop an image below or click to select one.</p>
 
   <div id="dropZone" class="drop-zone">
@@ -126,8 +137,10 @@
           method: 'POST',
           body: form,
         });
-        if (!res.ok) throw new Error('Processing failed');
-
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.detail || "Unknown error");
+        }
         const blob = await res.blob();
         const objectURL = URL.createObjectURL(blob);
         processedImg.src = objectURL;
@@ -148,4 +161,5 @@
     });
   </script>
 </body>
+
 </html>
