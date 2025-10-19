@@ -77,7 +77,7 @@ jobs:
         service: 'removebgbackend'
         image: 'asia-south1-docker.pkg.dev/gen-lang-client-0584302719/removebgbackend/removebgbackend:latest'
         region: 'asia-south1'
-        flags: '--memory=1Gi'
+        flags: '--memory=2Gi'
 
     - name: 'Use output'
       run: 'curl "${{ steps.deploy.outputs.url }}"'
