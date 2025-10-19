@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from router.remove_router import remove_router
 from fastapi.middleware.cors import CORSMiddleware
 
-port = int(os.environ.get("PORT", 8000))
+port = int(os.environ.get("PORT", 8080))
 app=FastAPI()
 app.add_middleware(
     CORSMiddleware,
