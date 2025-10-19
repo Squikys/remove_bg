@@ -1,6 +1,6 @@
 export default {
   async fetch(request,env) {
-    const url = "";
+    const url = env.BACKEND_URL;
 
     console.log("Incoming request method:", request.method);
     console.log("Incoming request headers:", Object.fromEntries(request.headers));
