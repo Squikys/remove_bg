@@ -1,6 +1,9 @@
+import os
 from fastapi import FastAPI
 from router.remove_router import remove_router
 from fastapi.middleware.cors import CORSMiddleware
+
+port = int(os.environ.get("PORT", 8000))
 app=FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -13,5 +16,5 @@ app.add_middleware(
 app.include_router(router=remove_router)
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info",
+    uvicorn.run(app, host="0.0.0.0", port=port, log_level="info",
                 workers=1, timeout_keep_alive=5) 
