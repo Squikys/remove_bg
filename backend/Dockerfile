@@ -8,6 +8,8 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
+RUN python -c "from rembg import new_session; new_session('u2net')"
+
 ENV PORT 8080
 
 EXPOSE 8080
