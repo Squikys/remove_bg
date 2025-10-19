@@ -24,7 +24,7 @@ jobs:
         run: npm install -g wrangler
 
       - name: Deploy Page
-        run: wrangler pages deploy --project-name removebg_homepage 
+        run: wrangler pages deploy --project-name removebghomepage 
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

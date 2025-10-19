@@ -1,7 +1,7 @@
 
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "removebg_homepage",
+	"name": "removebghomepage",
 	"compatibility_date": "2025-09-21",
     "pages_build_output_dir":"./",
 	"observability": {
