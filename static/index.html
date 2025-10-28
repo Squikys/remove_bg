@@ -120,46 +120,46 @@
       processedImg.src = '';
       downloadBtn.style.display = 'none';
     }
+uploadBtn.addEventListener('click', async () => {
+  if (!selectedFile) {
+    alert('Please select an image first.');
+    return;
+  }
+  spinner.style.display = 'inline';
+  uploadBtn.disabled = true;
 
-    uploadBtn.addEventListener('click', async () => {
-      if (!selectedFile) {
-        alert('Please select an image first.');
-        return;
-      }
-      spinner.style.display = 'inline';
-      uploadBtn.disabled = true;
+  const form = new FormData();
+  form.append('file', selectedFile, selectedFile.name);
 
-      const form = new FormData();
-      form.append('file', selectedFile, selectedFile.name);
-
-      try {
-        const res = await fetch("/api/remove", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!res.ok) {
-          const data = await res.json();
-          throw new Error(data.detail || "Unknown error");
-        }
-        const blob = await res.blob();
-        const objectURL = URL.createObjectURL(blob);
-        processedImg.src = objectURL;
-        downloadBtn.style.display = 'inline-block';
-
-        downloadBtn.onclick = () => {
-          const link = document.createElement('a');
-          link.href = objectURL;
-          link.download = 'processed.png';
-          link.click();
-        };
-      } catch (err) {
-        alert('Error: ' + err.message);
-      } finally {
-        spinner.style.display = 'none';
-        uploadBtn.disabled = false;
-      }
+  try {
+    const res = await fetch("/api/remove", {
+      method: "POST",
+      body: form,
     });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || "Unknown error");
+    }
+
+    const blob = await res.blob();
+    const objectURL = URL.createObjectURL(blob);
+    processedImg.src = objectURL;
+    downloadBtn.style.display = 'inline-block';
+
+    downloadBtn.onclick = () => {
+      const link = document.createElement('a');
+      link.href = objectURL;
+      link.download = 'processed.png';
+      link.click();
+    };
+  } catch (err) {
+    alert('Error: ' + err.message);
+  } finally {
+    spinner.style.display = 'none';
+    uploadBtn.disabled = false;
+  }
+});
   </script>
 </body>
 
