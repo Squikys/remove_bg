@@ -1,6 +1,6 @@
 export async function onRequestPost(context) {
   const formData = await context.request.formData();
-
+  console.log("Using AUTH_KEY:", context.env.AUTH_KEY ? "exists" : "missing");
   const res = await fetch("https://proxy.kaustavmahata.workers.dev/api/remove", {
     method: "POST",
     body: formData,
