@@ -133,10 +133,11 @@
       form.append('file', selectedFile, selectedFile.name);
 
       try {
-        const res = await fetch('https://proxy.kaustavmahata.workers.dev/api/remove', {
-          method: 'POST',
-          body: form,
+        const res = await fetch("/api/remove", {
+          method: "POST",
+          body: formData,
         });
+
         if (!res.ok) {
           const data = await res.json();
           throw new Error(data.detail || "Unknown error");
