@@ -1,8 +1,6 @@
 export default {
   async fetch(request, env) {
     const authKey = request.headers.get("X-Auth-Key");
-    console.log("Auth key received:", request.headers.get("X-Auth-Key"));
-    console.log("Auth key expected:", env.AUTH_KEY);
     if (authKey !== env.AUTH_KEY) {
       return new Response("Unauthorized", { status: 403 });
     }
